@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using RaspberryLights.Domain.Enums
+@model DeviceListViewModel
+
+<div class="container bg-black text-white">
+    <div class="row">
+        @foreach (var device in Model.Devices)
+        {
+            var badgeClass = device.ConnectionStatus == ConnectionStatus.Connected ? "bg-success" : "bg-warning";
+            <div class="col-md-4">
+                <a href="@Url.Action("DeviceDetails", new { DeviceId = device.Id })" class="text-decoration-none text-white">
+                    <div class="card mb-4 bg-dark animated-card">
+                        <div class="card-body position-relative">
+                            <div class="position-absolute top-0 end-0 p-2">
+                                <span class="badge rounded-pill @badgeClass">&nbsp;</span>
+                            </div>
+                            <h5 class="card-title">@device.Name</h5>
+                            <p class="card-text">
+                                <strong>Registration number:</strong> @device.RegistrationNumber<br/>
+                                <strong>Connection status:</strong> @device.ConnectionStatus<br/>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+        <div class="col-md-4">
+            <a href="@Url.Action("AddDevice", "RaspberryLights")" class="text-decoration-none text-white">
+                <div class="card mb-4 bg-dark animated-card add-device-card">
+                    <div class="card-body position-relative">
+                        <span class="card-title">+</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

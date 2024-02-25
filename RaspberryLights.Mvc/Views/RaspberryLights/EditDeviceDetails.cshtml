@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Edit Device Details";
+}
+
+@model DeviceDetailsViewModel
+
+<div class="container bg-black text-white">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mb-4 bg-dark">
+                <div class="card-body">
+                    <h2 class="card-title text-center">@Model.Device.Name</h2>
+                    <hr/>
+                    <form action="@Url.Action("SaveDeviceDetails", "RaspberryLights")" method="post">
+                        <input type="hidden" name="DeviceId" value="@Model.Device.Id">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="name" name="Name" value="@Model.Device.Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="registrationPlate">Registration number</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="registrationPlate" name="RegistrationPlate" value="@Model.Device.RegistrationNumber">
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="d-flex justify-content-between">
+                                <div class="btn-group" role="group">
+                                    <a href="@Url.Action("DeviceDetails", new { DeviceId = Model.Device.Id })" class="btn btn-secondary">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                                <div>
+                                    <a href="@Url.Action("DeleteDevice", new { DeviceId = Model.Device.Id })" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

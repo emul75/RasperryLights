@@ -1,0 +1,94 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Calibri Light", cursive;
+}
+
+.card{
+    min-height: 120px;
+}
+
+.card.animated-card {
+    transition: transform 0.3s;
+}
+
+.card.animated-card:hover {
+    transform: scale(1.03);
+}
+
+.add-device-card{
+    color: gray;
+    font-size: 50px;
+    font-weight: bold;
+    font-family: Calibri, serif;
+    text-align: center;
+}
+
+input[type="text"] {
+    border: 1px solid #333;
+}
+
+.animation-button {
+    font-size: 20px;
+    width: inherit;
+    height: 50px;
+    margin: 10px;
+}
+
+.registration-frame {
+    position: relative;
+    display: inline-block;
+    font-family: Verdana, sans-serif;
+    font-size: 34px;
+    font-weight: lighter;
+    color: #000;
+    background-color: #ccc;
+    padding: 2px 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 3px solid #000;
+    border-radius: 6px;
+}
+
+.registration-frame::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 100%;
+    background-color: #1c4eea;
+    border-radius: 3px 0 0 3px;
+}
+
+.registration-frame span {
+    display: inline-block;
+    margin-left: 24px;
+}
+
+
+
+.status-connected {
+    color: lightgreen;
+}
+
+.status-disconnected {
+    color: #dc3545;
+}
