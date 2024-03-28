@@ -8,7 +8,7 @@ public class AnimationParameters
     public SimpleColor CustomColor { get; set; }
     public SpeedType SpeedType { get; set; }
     public byte UserDefinedSpeed { get; set; }
-    public byte Brightness { get; set; }
+    public byte Brightness { get; set; } = byte.MaxValue;
 
     public class SimpleColor
     {

@@ -22,7 +22,7 @@ public class DeviceController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> StartAnimation(StartAnimationCommand startAnimationCommand)
+    public async Task<IActionResult> StartAnimation(StartAnimationCommand startAnimationCommand) // todo - why this is duplicated?
     {
         await _mediator.Send(startAnimationCommand);
         return RedirectToAction("Index", "RaspberryLights");

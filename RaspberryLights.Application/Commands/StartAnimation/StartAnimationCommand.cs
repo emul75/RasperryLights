@@ -11,7 +11,7 @@ public class StartAnimationCommand : IRequest
 
     public StartAnimationCommand(Guid deviceId, AnimationParameters animationParameters)
     {
-        deviceId = deviceId; // tudu ??
+        DeviceId = deviceId;
         AnimationParameters = animationParameters;
     }
 

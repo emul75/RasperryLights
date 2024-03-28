@@ -61,16 +61,15 @@
                                     <div class="col-md-12">
                                         <label for="userDefinedSpeed">Speed</label>
                                         <input type="range" id="userDefinedSpeed" name="animationParameters.UserDefinedSpeed" min="0" max="255" value="243">
-                                        <output for="userDefinedSpeed" id="rangeVal">234</output>
+                                        <output for="userDefinedSpeed" id="userDefinedSpeedVal">234</output>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label for="brightness">Speed</label>
-                                        <input type="range" id="brightness" name="animationParameters.UserDefinedSpeed" min="0" max="255" value="243">
-                                        <output for="brightness" id="rangeVal2">234</output>
-                                        @* tudu *@
+                                        <label for="brightness">Brightness</label>
+                                        <input type="range" id="brightness" name="animationParameters.Brightness" min="0" max="255" value="255">
+                                        <output for="brightness" id="brightnessVal">255</output>
                                     </div>
                                 </div>
                                 
@@ -86,13 +85,19 @@
 </div>
 
 <script>
-    const range = document.getElementById('userDefinedSpeed')
-    const rangeVal = document.getElementById('rangeVal')
+    const userDefinedSpeed = document.getElementById('userDefinedSpeed')
+    const userDefinedSpeedVal = document.getElementById('userDefinedSpeedVal')
 
-    range.addEventListener('input', () => {
-        rangeVal.innerText = range.value
+    userDefinedSpeed.addEventListener('input', () => {
+        userDefinedSpeedVal.innerText = range.value
     })
     
+    const brightness = document.getElementById('brightness')
+    const brightnessVal = document.getElementById('brightnessVal')
+    
+    brightness.addEventListener('input', () => {
+        brightnessVal.innerText = brightness.value
+    })
     
     const colorPicker = document.querySelector('#customColor')
     const rInput = document.querySelector('#customColorR')
