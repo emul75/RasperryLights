@@ -1,5 +1,5 @@
 using MediatR;
-using RaspberryLightsWebApi.Models;
+using RaspberryLights.Domain.Models;
 
 namespace RaspberryLights.Application.Commands.StartAnimation;
 

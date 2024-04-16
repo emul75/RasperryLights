@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RaspberryLights.Application.Interfaces;
+using RaspberryLights.Domain.Exceptions;
 
 namespace RaspberryLights.Application.Commands.UpdateDeviceIp;
 

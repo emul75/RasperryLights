@@ -21,7 +21,7 @@ public class GetDeviceQueryHandler : IRequestHandler<GetDeviceQuery, Device>
 
         if (!string.IsNullOrWhiteSpace(request.RegistrationPlate))
             return await _dbContext.Devices.FirstOrDefaultAsync(w => w.RegistrationPlate == request.RegistrationPlate,
-                cancellationToken); // tudu
+                cancellationToken); // todo - possible null reference
 
         throw new ArgumentException("At least one search criteria must be provided.");
     }

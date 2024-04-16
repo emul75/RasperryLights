@@ -6,9 +6,8 @@ public class DeleteDeviceCommand : IRequest
 {
     public DeleteDeviceCommand(Guid deviceId)
     {
-        deviceId = deviceId;
+        DeviceId = deviceId;
     }
 
     public Guid DeviceId { get; set; }
-    
 }

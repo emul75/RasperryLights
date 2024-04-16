@@ -1,3 +1,5 @@
+using RaspberryLights.Mvc.Dtos;
+
 namespace RaspberryLights.Mvc.Models;
 
 public class DeviceListViewModel

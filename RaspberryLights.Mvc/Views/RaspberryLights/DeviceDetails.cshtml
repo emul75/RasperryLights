@@ -1,4 +1,5 @@
 @model DeviceDetailsViewModel
+@using RaspberryLights.Domain.Enums;
 
 <div class="container bg-black text-white">
     <div class="row justify-content-center">
@@ -12,9 +13,12 @@
                         <a href="@Url.Action("EditDeviceDetails", new { DeviceId = Model.Device.Id })" class="btn btn-secondary">Edit</a>
                     </div>
 
-                    <div class="registration-frame">
-                        <span>@Model.Device.RegistrationNumber</span>
-                    </div>
+                    @if (Model.Device.Type == DeviceType.Car)
+                    {
+                        <div class="registration-frame">
+                            <span>@Model.Device.RegistrationNumber</span>
+                        </div>
+                    }
 
                     <hr/>
 
@@ -23,9 +27,9 @@
                     <form asp-action="StartAnimation" method="post" class="mb-2">
                         <input type="hidden" name="deviceId" value="@Model.Device.Id">
 
-                        <input type="hidden" name="animationParameters.CustomColor.R" id="customColorR" value="255">
-                        <input type="hidden" name="animationParameters.CustomColor.G" id="customColorG" value="255">
-                        <input type="hidden" name="animationParameters.CustomColor.B" id="customColorB" value="255">
+                        <input type="hidden" name="animationParameters.CustomColor.R" id="customColorR" value="@Model.AnimationParameters.CustomColor.R">
+                        <input type="hidden" name="animationParameters.CustomColor.G" id="customColorG" value="@Model.AnimationParameters.CustomColor.G">
+                        <input type="hidden" name="animationParameters.CustomColor.B" id="customColorB" value="@Model.AnimationParameters.CustomColor.B">
 
 
                         <div class="row">
@@ -33,46 +37,52 @@
                                 <div class="btn-group-vertical">
                                     @foreach (var animation in Model.AvailableAnimations)
                                     {
-                                        <button type="submit" name="animationParameters.Animation" value="@animation" class="btn btn-primary @(Model.Device.CurrentAnimation == animation ? "active" : "")">@animation</button>
+                                        <button type="submit" name="animationParameters.Animation" value="@animation" class="btn btn-primary @(Model.AnimationParameters.Animation == animation ? "active" : "")">@animation</button>
                                     }
                                 </div>
                             </div>
 
                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="speedType">Speed Type</label>
+                                    <br/>
+                                    <div id="speedType" class="btn-group" role="group" aria-label="Speed Type Buttons">
+                                        @foreach (var speedType in Model.AvailableSpeedTypes)
+                                        {
+                                            <button type="button" class="btn @(Model.AnimationParameters.SpeedType == speedType ? "btn-primary active" : "btn-secondary")" data-value="@speedType">@speedType</button>
+                                        }
+                                    </div>
+                                    <input type="hidden" id="selectedSpeedType" name="animationParameters.SpeedType" value="@Model.AnimationParameters.SpeedType">
+                                </div>
+                                <br>
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="customColor">Custom Color</label>
-                                        <input type="color" id="customColor" name="animationParameters.CustomColor" value="#ffffff">
+                                        <br>
+                                        <input type="color" id="customColor" name="animationParameters.CustomColor" value="@Model.AnimationParameters.CustomColor.ToHexString()">
                                     </div>
                                 </div>
+                                <br>
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label for="speedType">Speed Control</label>
-                                        <select id="speedType" name="animationParameters.SpeedType">
-                                            <option value="UserDefined">User Defined</option>
-                                            <option value="VehicleSpeed">Vehicle Speed</option>
-                                            <option value="EngineRpm">Engine RPM</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
+                                        @{ var userDefinedSpeedValue = Model.AnimationParameters.UserDefinedSpeed; }
                                         <label for="userDefinedSpeed">Speed</label>
-                                        <input type="range" id="userDefinedSpeed" name="animationParameters.UserDefinedSpeed" min="0" max="255" value="243">
-                                        <output for="userDefinedSpeed" id="userDefinedSpeedVal">234</output>
+                                        <input type="range" id="userDefinedSpeed" name="animationParameters.UserDefinedSpeed" min="0" max="255" value="@userDefinedSpeedValue">
+                                        <output for="userDefinedSpeed" id="userDefinedSpeedVal">@userDefinedSpeedValue</output>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-12">
+                                        @{ var brightnessValue = Model.AnimationParameters.Brightness; }
                                         <label for="brightness">Brightness</label>
-                                        <input type="range" id="brightness" name="animationParameters.Brightness" min="0" max="255" value="255">
-                                        <output for="brightness" id="brightnessVal">255</output>
+                                        <input type="range" id="brightness" name="animationParameters.Brightness" min="0" max="255" value="@brightnessValue">
+                                        <output for="brightness" id="brightnessVal">@brightnessValue</output>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </form>
@@ -85,12 +95,25 @@
 </div>
 
 <script>
-    const userDefinedSpeed = document.getElementById('userDefinedSpeed')
-    const userDefinedSpeedVal = document.getElementById('userDefinedSpeedVal')
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('#speedType button');
+        const hiddenInput = document.getElementById('selectedSpeedType');
+    
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                buttons.forEach(b => b.classList.replace('btn-primary', 'btn-secondary'));
+                button.classList.replace('btn-secondary', 'btn-primary');
+                hiddenInput.value = button.getAttribute('data-value');
+            });
+        });
+    });
 
+    const userDefinedSpeed = document.getElementById('userDefinedSpeed');
+    const userDefinedSpeedVal = document.getElementById('userDefinedSpeedVal');
+    
     userDefinedSpeed.addEventListener('input', () => {
-        userDefinedSpeedVal.innerText = range.value
-    })
+        userDefinedSpeedVal.innerText = userDefinedSpeed.value;
+    });
     
     const brightness = document.getElementById('brightness')
     const brightnessVal = document.getElementById('brightnessVal')

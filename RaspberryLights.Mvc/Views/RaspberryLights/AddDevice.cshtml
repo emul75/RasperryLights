@@ -1,3 +1,4 @@
+@using RaspberryLights.Domain.Enums
 @{
     ViewData["Title"] = "Add Device";
 }
@@ -11,18 +12,40 @@
                     <hr/>
                     <form action="@Url.Action("SaveNewDevice", "RaspberryLights")" method="post">
                         <div class="form-group">
+                            <label for="deviceType">Device Type</label>
+                            <br/>
+                            <div id="deviceType" class="btn-group" role="group" aria-label="Device Type Buttons">
+                                @{ var availableDeviceTypes = Enum.GetValues(typeof(DeviceType))
+                                       .Cast<DeviceType>()
+                                       .ToList();
+                                }
+
+                                @foreach (var deviceType in availableDeviceTypes)
+                                {
+                                    <button type="button" class="btn @(deviceType == DeviceType.Home ? "btn-primary" : "btn-secondary")" data-value="@deviceType">@deviceType</button>
+                                }
+                            </div>
+                            <input type="hidden" id="selectedDeviceType" name="Type" value="@DeviceType.Home">
+                        </div>
+                        <br/>
+
+                        <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control bg-dark text-white border-secondary" id="name" name="Name">
                         </div>
+
                         <div class="form-group">
-                            <label for="registrationPlate">Registration number</label>
+                            <label for="registrationPlate">Registration number (only for Car type devices)</label>
                             <input type="text" class="form-control bg-dark text-white border-secondary" id="registrationPlate" name="RegistrationPlate">
                         </div>
+
                         <div class="form-group">
                             <label for="registrationPlate">Device Id</label>
                             <input type="text" class="form-control bg-dark text-white border-secondary" id="deviceId" name="DeviceId">
                         </div>
+
                         <hr/>
+
                         <div class="btn-group" role="group">
                             <a href="@Url.Action("Index", "RaspberryLights")" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Add</button>
@@ -33,3 +56,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('#deviceType button');
+        const hiddenInput = document.getElementById('selectedDeviceType');
+    
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                buttons.forEach(b => b.classList.replace('btn-primary', 'btn-secondary'));
+                button.classList.replace('btn-secondary', 'btn-primary');
+                hiddenInput.value = button.getAttribute('data-value');
+            });
+        });
+    });
+</script>

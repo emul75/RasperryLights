@@ -1,39 +1,33 @@
 using System.Text.Json;
 using MediatR;
-using RaspberryLights.Application.Commands.UpdateDeviceIp;
 using RaspberryLights.Application.Interfaces;
-using RaspberryLightsWebApi.Models;
+using RaspberryLights.Domain.Exceptions;
+using RaspberryLights.Domain.Models;
 
 namespace RaspberryLights.Application.Queries.GetCurrentAnimationParameters;
 
-public class GetCurrentAnimationParametersQueryHandler : IRequestHandler<GetCurrentAnimationParametersQuery, AnimationParameters>
+public class GetCurrentAnimationParametersQueryHandler(IRaspberryLightsDbContext dbContext)
+    : IRequestHandler<GetCurrentAnimationParametersQuery, AnimationParameters>
 {
-    private readonly IRaspberryLightsDbContext _dbContext;
-
-    public GetCurrentAnimationParametersQueryHandler(IRaspberryLightsDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task<AnimationParameters> Handle(GetCurrentAnimationParametersQuery request,
         CancellationToken cancellationToken)
     {
-        var deviceConnectionUrl =
-            (await _dbContext.Devices.FindAsync(new object?[] { request.DeviceId },
-                cancellationToken: cancellationToken))?
-            .ConnectionUrl
-            ?? throw new DeviceNotFoundException();
-
-        var handler = new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (sender, cert, chain, errors) => true
-        };
-
-        using var httpClient = new HttpClient(handler);
-        var startAnimationUrl = $"{deviceConnectionUrl}/Led/getCurrentAnimationParameters";
-
         try
         {
+            var device = await dbContext.Devices.FindAsync([request.DeviceId], cancellationToken: cancellationToken)
+                         ?? throw new DeviceNotFoundException();
+
+            var deviceConnectionUrl = device.ConnectionUrl;
+
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, errors) => true
+            };
+
+            using var httpClient = new HttpClient(handler);
+            var startAnimationUrl = $"{deviceConnectionUrl}/Led/getCurrentAnimationParameters";
+
+
             var response = await httpClient.GetAsync(startAnimationUrl, cancellationToken);
 
             if (response.IsSuccessStatusCode)
@@ -49,9 +43,13 @@ public class GetCurrentAnimationParametersQueryHandler : IRequestHandler<GetCurr
 
             throw new HttpRequestException($"Request failed with status code: {response.StatusCode}");
         }
-        catch (HttpRequestException e)
+        catch (HttpRequestException)
         {
-            throw new Exception("Unable to connect to the device.", e);
+            return new AnimationParameters();
+        }
+        catch (InvalidOperationException) // todo - custom exception if ConnectionUrl is invalid
+        {
+            return new AnimationParameters();
         }
     }
 }

@@ -6,7 +6,7 @@ public class Device
 {
     public Guid Id { get; init; }
     public string? Name { get; set; }
-    public DeviceType Type { get; set; } = DeviceType.Home;    
+    public DeviceType Type { get; set; } = DeviceType.Home;
     public string? RegistrationPlate { get; set; }
     public string? ConnectionUrl { get; set; }
     

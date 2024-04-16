@@ -15,7 +15,7 @@ public class RaspberryLightsDbContext : DbContext, IRaspberryLightsDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // modelBuilder.HasDefaultSchema("OS"); // tudu
+        // modelBuilder.HasDefaultSchema("OS"); // todo - custom schema
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Devices)

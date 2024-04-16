@@ -19,7 +19,11 @@
                             </div>
                             <h5 class="card-title">@device.Name</h5>
                             <p class="card-text">
-                                <strong>Registration number:</strong> @device.RegistrationNumber<br/>
+                                @if (device.Type == DeviceType.Car)
+                                {
+                                    <strong>Registration number:</strong> @device.RegistrationNumber<br/>
+                                }
+                                
                                 <strong>Connection status:</strong> @device.ConnectionStatus<br/>
                             </p>
                         </div>

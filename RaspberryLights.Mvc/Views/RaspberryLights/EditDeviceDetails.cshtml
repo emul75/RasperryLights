@@ -13,15 +13,33 @@
                     <hr/>
                     <form action="@Url.Action("SaveDeviceDetails", "RaspberryLights")" method="post">
                         <input type="hidden" name="DeviceId" value="@Model.Device.Id">
+
+                        <div class="form-group">
+                            <label for="deviceType">Device Type</label>
+                            <br/>
+                            <div id="deviceType" class="btn-group" role="group" aria-label="Device Type Buttons">
+                                @foreach (var deviceType in Model.AvailableDeviceTypes)
+                                {
+                                    <button type="button" class="btn @(Model.Device.Type == deviceType ? "btn-primary" : "btn-secondary")" data-value="@deviceType">@deviceType</button>
+                                }
+                            </div>
+                            <input type="hidden" id="selectedDeviceType" name="DeviceType" value="@Model.Device.Type">
+                        </div>
+                        <br/>
+
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control bg-dark text-white border-secondary" id="name" name="Name" value="@Model.Device.Name">
                         </div>
+                        <br/>
+
                         <div class="form-group">
-                            <label for="registrationPlate">Registration number</label>
+                            <label for="registrationPlate">Registration number (only for Car type devices)</label>
                             <input type="text" class="form-control bg-dark text-white border-secondary" id="registrationPlate" name="RegistrationPlate" value="@Model.Device.RegistrationNumber">
                         </div>
+
                         <hr/>
+
                         <div class="row">
                             <div class="d-flex justify-content-between">
                                 <div class="btn-group" role="group">
@@ -39,3 +57,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('#deviceType button');
+        const hiddenInput = document.getElementById('selectedDeviceType');
+    
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                buttons.forEach(b => b.classList.replace('btn-primary', 'btn-secondary'));
+                button.classList.replace('btn-secondary', 'btn-primary');
+                hiddenInput.value = button.getAttribute('data-value');
+            });
+        });
+    });
+</script>

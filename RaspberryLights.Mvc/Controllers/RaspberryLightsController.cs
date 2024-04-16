@@ -5,10 +5,12 @@ using RaspberryLights.Application.Commands.DeleteDevice;
 using RaspberryLights.Application.Commands.StartAnimation;
 using RaspberryLights.Application.Commands.UpdateDevice;
 using RaspberryLights.Application.Queries.CheckConnection;
+using RaspberryLights.Application.Queries.GetCurrentAnimationParameters;
 using RaspberryLights.Application.Queries.GetDevice;
 using RaspberryLights.Application.Queries.GetDevices;
+using RaspberryLights.Domain.Models;
+using RaspberryLights.Mvc.Dtos;
 using RaspberryLights.Mvc.Models;
-using RaspberryLightsWebApi.Models;
 
 namespace RaspberryLights.Mvc.Controllers;
 
@@ -27,11 +29,8 @@ public class RaspberryLightsController : Controller
     {
         var devices = await _mediator.Send(new GetDevicesQuery());
 
-        var viewModel = new DeviceListViewModel
-        {
-            Devices = new List<DeviceDto>()
-        };
-        
+        var viewModel = new DeviceListViewModel { Devices = [] };
+
         foreach (var device in devices)
         {
             var deviceDto = DeviceDto.Map(device);
@@ -39,7 +38,7 @@ public class RaspberryLightsController : Controller
 
             viewModel.Devices.Add(deviceDto);
         }
-        
+
         return View(viewModel);
     }
 
@@ -48,7 +47,8 @@ public class RaspberryLightsController : Controller
     {
         var device = await _mediator.Send(new GetDeviceQuery { Id = deviceId });
         var deviceDto = DeviceDto.Map(device);
-        var viewModel = new DeviceDetailsViewModel(deviceDto);
+        var currentAnimationParameters = await _mediator.Send(new GetCurrentAnimationParametersQuery(deviceId));
+        var viewModel = new DeviceDetailsViewModel(deviceDto, currentAnimationParameters);
 
         return View(viewModel);
     }
@@ -58,7 +58,7 @@ public class RaspberryLightsController : Controller
     {
         var device = await _mediator.Send(new GetDeviceQuery { Id = deviceId });
         var deviceDto = DeviceDto.Map(device);
-        var viewModel = new DeviceDetailsViewModel(deviceDto);
+        var viewModel = new DeviceDetailsViewModel(deviceDto, new AnimationParameters());
 
         return View(viewModel);
     }
@@ -70,7 +70,8 @@ public class RaspberryLightsController : Controller
 
         var device = await _mediator.Send(new GetDeviceQuery(command.DeviceId));
         var deviceDto = DeviceDto.Map(device);
-        var viewModel = new DeviceDetailsViewModel(deviceDto);
+        var currentAnimationParameters = await _mediator.Send(new GetCurrentAnimationParametersQuery(device.Id));
+        var viewModel = new DeviceDetailsViewModel(deviceDto, currentAnimationParameters);
 
         return View("DeviceDetails", viewModel);
     }
@@ -86,8 +87,10 @@ public class RaspberryLightsController : Controller
     {
         var device = await _mediator.Send(command);
         var deviceDto = DeviceDto.Map(device);
+        var currentAnimationParameters = await _mediator.Send(new GetCurrentAnimationParametersQuery(device.Id));
+        var viewModel = new DeviceDetailsViewModel(deviceDto, currentAnimationParameters);
 
-        return View("DeviceDetails", new DeviceDetailsViewModel(deviceDto));
+        return View("DeviceDetails", viewModel);
     }
 
     public async Task<IActionResult> DeleteDevice(Guid deviceId)

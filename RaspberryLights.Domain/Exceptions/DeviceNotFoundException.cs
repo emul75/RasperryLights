@@ -1,4 +1,4 @@
-namespace RaspberryLights.Application.Commands.UpdateDeviceIp;
+namespace RaspberryLights.Domain.Exceptions;
 
 public class DeviceNotFoundException : Exception
 {
